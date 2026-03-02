@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fake Profile Detector Pro</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#141e30,#243b55);
+    color:white;
+    transition:0.4s;
+}
+
+body.light{
+    background:linear-gradient(135deg,#f5f7fa,#c3cfe2);
+    color:#222;
+}
+
+.container{
+    width:95%;
+    max-width:600px;
+    padding:30px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    box-shadow:0 0 40px rgba(0,0,0,0.4);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.toggle{
+    text-align:right;
+    margin-bottom:10px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    font-size:13px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    background:#00c6ff;
+    background:linear-gradient(to right,#00c6ff,#0072ff);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.image-upload{
+    border:2px dashed #aaa;
+    padding:20px;
+    text-align:center;
+    border-radius:15px;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+.image-upload img{
+    max-width:120px;
+    margin-top:10px;
+    border-radius:50%;
+}
+
+.result-box{
+    margin-top:20px;
+    text-align:center;
+}
+
+.circle{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin:15px auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    font-weight:bold;
+    background:conic-gradient(#00ffae 0deg,#00ffae 0deg,#ffffff30 0deg);
+    transition:1s;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="toggle" onclick="toggleMode()">🌙 Toggle Mode</div>
+
+<h1>🤖 AI Fake Profile Detector PRO</h1>
+
+<form id="profileForm">
+
+<div class="image-upload" onclick="document.getElementById('imageInput').click()">
+    <p>📷 Upload Profile Image</p>
+    <input type="file" id="imageInput" hidden accept="image/*">
+    <img id="preview" style="display:none;">
+</div>
+
+<div class="input-group">
+<label>Username</label>
+<input type="text" id="username" required>
+</div>
+
+<div class="input-group">
+<label>Followers</label>
+<input type="number" id="followers" required>
+</div>
+
+<div class="input-group">
+<label>Following</label>
+<input type="number" id="following" required>
+</div>
+
+<div class="input-group">
+<label>Posts</label>
+<input type="number" id="posts" required>
+</div>
+
+<div class="input-group">
+<label>Account Age (Months)</label>
+<input type="number" id="age" required>
+</div>
+
+<button type="submit">Analyze with AI</button>
+</form>
+
+<div class="result-box">
+    <div class="circle" id="riskCircle">0%</div>
+    <div id="resultText"></div>
+</div>
+
+</div>
+
+<script>
+
+// Dark Light Mode
+function toggleMode(){
+    document.body.classList.toggle("light");
+}
+
+// Image Preview
+document.getElementById("imageInput").addEventListener("change", function(){
+    const file = this.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display="block";
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// Form Submit
+document.getElementById("profileForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let followers = parseInt(document.getElementById("followers").value);
+    let following = parseInt(document.getElementById("following").value);
+    let posts = parseInt(document.getElementById("posts").value);
+    let age = parseInt(document.getElementById("age").value);
+
+    let score = 0;
+
+    if(followers < 100) score += 20;
+    if(following > followers * 2) score += 20;
+    if(posts < 10) score += 20;
+    if(age < 6) score += 20;
+    if(document.getElementById("preview").style.display === "none") score += 20;
+
+    let circle = document.getElementById("riskCircle");
+    circle.innerText = score + "%";
+    circle.style.background = `conic-gradient(${score >= 50 ? "#ff4d4d" : "#00ffae"} ${score*3.6}deg, #ffffff30 0deg)`;
+
+    let result = document.getElementById("resultText");
+
+    if(score >= 60){
+        result.innerHTML = "🚨 High Risk - Likely Fake Profile";
+        result.style.color="#ff4d4d";
+    }else{
+        result.innerHTML = "✅ Low Risk - Likely Real Profile";
+        result.style.color="#00ffae";
+    }
+});
+
+</script>
+
+</body>
+</html>
